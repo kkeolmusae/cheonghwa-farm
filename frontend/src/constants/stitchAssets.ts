@@ -1,0 +1,13 @@
+/**
+ * Stitch 시안(프로젝트 9877866800977330421) HTML에 사용된 이미지 URL.
+ * 시각적 출처를 시안과 동일하게 맞추기 위해 보관합니다.
+ */
+export const STITCH_HERO_IMAGE =
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuBU0oil2JKMp05ShVhh70z7mPzyk3fx8QvqgZpz0iDqlc8EHTSj1j6dfiT3HQMpGEZRXggeeLVx_rSATClqZj6cRphZPV1VMFx5wC_RbQ0L302WfzMnpTar1-nrHUrBGbApCPxr25uTH216n9TypbRXw36mmVa7kCrhGsmUZfTiAFr6KkJZrLBkdA__SorszB9bZeczgFFRE4lTGP9kGuHC7Q1h1FyVvpSAP6GylbOU9oDKWGXcpSDFMfMHiSiQ9Ra1LXVWbBiNO4E';
+
+export const STITCH_FARM_STORY_IMAGE =
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuDikyDsxTQp5rWJNK0N5zFsXRHeL55KXiwxJcm_fWxKZBm-Fa9dMzNpydmihrzD8pX1XZ4TF87oTrosOyk-W2QZa9c8Vk8nBOpktTKsNXrfXQsfZZsdW7Pu9vwEH7GuDa4dAx2W2FXOTSXn29oEUkUR0AMx0uooPmUoaLohR3YlCjQIi89cpH1OKpp16u3tODRIYMY8GeqmKQPhIkCzcgw3zc5JHD3DZmiLjXSBBjiRufHQ6HfiAW3SinFKLmyPpRdnzgjP8YWyvcs';
+
+/** 상품 리스트 페이지 히어로 배경 텍스처 (시안) */
+export const STITCH_SHOP_HERO_TEXTURE =
+  'https://lh3.googleusercontent.com/aida-public/AB6AXuA6tNhSQY4VX88HIpFUs-jQGFZS-QCGjjrsA8irp_xO8ekHUscQ0UQED-WK_15-gGJGWihsDtuzOj-LE2_aZpcGiIDi58Y_lcpxwfICWMXrcB0rfF6wDt9k83gwo9ZRgeK6RKfbDYWD64z6F_h3wabAgL9dUbIKOxVQk39XNQpofZaj68jj_lostCzrCPKYwQ6PT4IxQGx2aHJFpnMeO7quClx6kLiUaHkK4b6opyRqqyR9Exc8Ow7ymYTEwHmLmr_oWfLEP1yr1UY';
