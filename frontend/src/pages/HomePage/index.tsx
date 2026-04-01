@@ -1,20 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-
+import { ArrowRight, MapPin, Phone, Clock, Pin, ShoppingBag, Leaf, Sprout, Package } from 'lucide-react';
 import { fetchSiteSettings, siteSettingsKeys } from '@/api/siteSettings';
 import { toAbsoluteMediaUrl } from '@/utils/mediaUrl';
-import {
-  ArrowRight,
-  MapPin,
-  Phone,
-  Clock,
-  Pin,
-  ShoppingBag,
-  Leaf,
-  Sprout,
-  Package,
-} from 'lucide-react';
-
 import { fetchProducts, productKeys } from '@/api/products';
 import { fetchJournals, journalKeys } from '@/api/journals';
 import { fetchNotices, noticeKeys } from '@/api/notices';
@@ -22,7 +10,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { ImagePlaceholder } from '@/components/ui/ImagePlaceholder';
 import { formatPrice, formatShortDate } from '@/utils/format';
 import { getProductStatus } from '@/constants/status';
-import { FARM_INFO, FARM_CROPS_LABEL } from '@/constants/farm';
+import { FARM_INFO } from '@/constants/farm';
 import { STITCH_FARM_STORY_IMAGE, STITCH_HERO_IMAGE } from '@/constants/stitchAssets';
 
 export default function HomePage() {
@@ -31,14 +19,8 @@ export default function HomePage() {
     queryFn: fetchSiteSettings,
     staleTime: 60_000,
   });
-
-  const heroUrl = siteImg?.home_hero_image_url
-    ? toAbsoluteMediaUrl(siteImg.home_hero_image_url)
-    : STITCH_HERO_IMAGE;
-  const storyUrl = siteImg?.home_story_image_url
-    ? toAbsoluteMediaUrl(siteImg.home_story_image_url)
-    : STITCH_FARM_STORY_IMAGE;
-
+  const heroUrl = siteImg?.home_hero_image_url ? toAbsoluteMediaUrl(siteImg.home_hero_image_url) : STITCH_HERO_IMAGE;
+  const storyUrl = siteImg?.home_story_image_url ? toAbsoluteMediaUrl(siteImg.home_story_image_url) : STITCH_FARM_STORY_IMAGE;
   return (
     <>
       <HeroSection heroUrl={heroUrl} />
@@ -52,40 +34,35 @@ export default function HomePage() {
   );
 }
 
-/** 시안 Section 1: Hero — 고정 높이, 좌→우 그라데이션, primary CTA는 녹색 솔리드 */
 function HeroSection({ heroUrl }: { heroUrl: string }) {
   return (
-    <section className="relative flex min-h-[70vh] items-center overflow-hidden md:h-[921px] md:min-h-0">
+    <section className="relative flex min-h-[80vh] items-center overflow-hidden md:h-[920px] md:min-h-0">
       <div className="absolute inset-0 z-0">
         <img src={heroUrl} alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+        <div className="hero-overlay-left absolute inset-0" />
       </div>
-      <div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 py-20 md:px-8">
+      <div className="relative z-10 container-site py-20">
         <div className="max-w-2xl text-white">
-          <span className="mb-6 inline-block rounded-full bg-primary-container px-4 py-1.5 font-headline text-xs font-bold uppercase tracking-[0.2em] text-on-primary-container">
-            Premium Editorial Farm
+          <span className="eyebrow-light mb-6">
+            직접 재배 · 직접 판매
           </span>
-          <h1 className="font-headline text-5xl font-black leading-[1.1] tracking-tighter md:text-7xl lg:text-8xl">
+          <h1 className="mt-4 font-display text-display-xl font-black text-white text-balance">
             자연 그대로 키운
             <br />
-            <span className="text-primary-fixed">{FARM_INFO.name}</span>
+            <span className="text-gold-300">{FARM_INFO.name}</span>
           </h1>
-          <p className="mt-6 font-body text-xl leading-relaxed text-white/90 md:text-2xl">
+          <p className="mt-6 font-body text-xl leading-relaxed text-white/85 md:text-2xl text-pretty">
             직접 재배하고 직접 판매합니다.
             <br />
             땅의 정직함이 전하는 가장 신선한 이야기.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
-            <Link to="/products" className="group inline-flex">
-              <span className="inline-flex items-center gap-2 rounded-xl bg-primary px-10 py-5 font-headline text-lg font-bold text-on-primary transition-all hover:bg-primary-container hover:text-on-primary-container">
-                상품 보러가기
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </span>
+            <Link to="/products" className="group btn btn-primary btn-xl">
+              상품 보러가기
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
-            <Link to="/about">
-              <span className="inline-flex items-center rounded-xl border border-white/20 bg-white/10 px-10 py-5 font-headline text-lg font-bold text-white backdrop-blur-md transition-all hover:bg-white/20">
-                농장 이야기 보기
-              </span>
+            <Link to="/about" className="btn btn-outline-dark btn-xl">
+              농장 이야기 보기
             </Link>
           </div>
         </div>
@@ -94,49 +71,44 @@ function HeroSection({ heroUrl }: { heroUrl: string }) {
   );
 }
 
-/** 시안 Section 2: Farm Story — 시안 이미지 + 플로팅 인용 카드 */
 function AboutPreview({ storyUrl }: { storyUrl: string }) {
   return (
-    <section className="bg-surface px-4 py-24 md:px-8 md:py-32">
-      <div className="mx-auto grid max-w-screen-2xl grid-cols-1 items-center gap-16 md:grid-cols-2">
-        <div className="relative group">
-          <div className="absolute -left-6 -top-6 -z-10 h-32 w-32 rounded-full bg-tertiary-fixed opacity-50" />
-          <img
-            src={storyUrl}
-            alt=""
-            className="aspect-[4/5] w-full rounded-xl object-cover shadow-xl"
-          />
-          <div className="absolute -bottom-4 -right-4 hidden max-w-xs rounded-xl bg-surface-container-lowest p-8 shadow-lg lg:block">
-            <p className="font-body text-base italic font-medium leading-relaxed text-secondary">
-              &ldquo;{FARM_INFO.region}의 맑은 공기와 땅을 믿습니다. 그것이 가장 맛있는 농산물을 만드는
-              길입니다.&rdquo;
+    <section className="bg-surface section-py">
+      <div className="container-site">
+        <div className="grid grid-cols-1 items-center gap-14 md:grid-cols-2 lg:gap-20">
+          <div className="relative">
+            <div className="absolute -left-4 -top-4 h-28 w-28 rounded-full bg-forest-100 opacity-60" />
+            <img
+              src={storyUrl}
+              alt=""
+              className="relative aspect-[4/5] w-full rounded-3xl object-cover shadow-xl"
+            />
+            <div className="absolute -bottom-5 -right-4 hidden max-w-xs rounded-2xl bg-surface-raised p-6 shadow-lg lg:block">
+              <p className="font-body text-sm italic font-medium leading-relaxed text-on-muted">
+                &ldquo;{FARM_INFO.region}의 맑은 공기와 땅을 믿습니다.&rdquo;
+              </p>
+              <p className="mt-3 font-headline text-sm font-bold text-on-bg">{FARM_INFO.representative} 대표</p>
+            </div>
+          </div>
+          <div className="space-y-7">
+            <div className="heading-group">
+              <span className="eyebrow">Our Philosophy</span>
+              <h2 className="text-h1 font-headline font-black text-on-bg text-balance">
+                느리지만 바르게,
+                <br />
+                흙에서 식탁까지의 여정
+              </h2>
+            </div>
+            <p className="text-body-lg text-on-muted text-pretty">
+              {FARM_INFO.name}은(는) 할머니 대부터 이어온 재배 방식과 오늘의 품질 관리를 함께합니다.
+              제초제 없는 건강한 땅에서 자란 작물은 농부가 직접 확인하고, 당일 포장해 식탁까지 전합니다.
             </p>
-            <p className="mt-4 font-headline font-bold text-on-surface">{FARM_INFO.representative} 대표</p>
-          </div>
-        </div>
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <h2 className="font-headline text-sm font-bold uppercase tracking-[0.2em] text-tertiary">
-              Our Philosophy
-            </h2>
-            <h3 className="font-headline text-4xl font-extrabold leading-tight text-on-surface md:text-5xl">
-              느리지만 바르게,
-              <br />
-              흙에서 식탁까지의 여정
-            </h3>
-          </div>
-          <p className="font-body text-lg leading-relaxed text-on-surface-variant">
-            {FARM_INFO.name}은(는) 할머니 대부터 이어온 재배 방식과 오늘의 품질 관리를 함께합니다. 제초제 없는
-            건강한 땅에서 자란 {FARM_CROPS_LABEL} 등 작물은 농부가 직접 확인하고, 당일 포장해 식탁까지
-            전합니다.
-          </p>
-          <div className="pt-2">
             <Link
               to="/about"
-              className="inline-flex items-center gap-2 font-headline text-lg font-bold text-primary-500 transition-colors hover:text-primary-600"
+              className="inline-flex items-center gap-2 font-headline text-base font-bold text-primary transition-colors hover:text-primary-dark"
             >
               상세한 재배 방식 읽어보기
-              <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -152,69 +124,64 @@ function ProductsSection() {
   });
 
   return (
-    <section className="bg-surface-container-low px-4 py-24 md:px-8">
-      <div className="mx-auto max-w-screen-2xl">
-        <div className="mb-16 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <div>
-            <h2 className="mb-4 font-headline text-sm font-bold uppercase tracking-[0.2em] text-tertiary">
-              Best Selection
-            </h2>
-            <h3 className="font-headline text-4xl font-extrabold text-on-surface">지금 가장 맛있는 상품</h3>
+    <section className="bg-surface-muted section-py">
+      <div className="container-site">
+        <div className="mb-14 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+          <div className="heading-group">
+            <span className="eyebrow">Best Selection</span>
+            <h2 className="text-h2 font-headline font-bold text-on-bg">지금 가장 맛있는 상품</h2>
           </div>
           <Link
             to="/products"
-            className="hidden font-headline font-bold text-on-surface-variant transition-colors hover:text-primary-500 sm:inline"
+            className="hidden items-center gap-1 font-headline text-sm font-bold text-on-subtle transition-colors hover:text-primary sm:inline-flex"
           >
-            전체보기 +
+            전체보기 <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
         {isLoading ? (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-96 rounded-xl" />
+              <Skeleton key={i} className="h-96 rounded-2xl" />
             ))}
           </div>
         ) : (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {data?.items.map((product) => {
               const status = getProductStatus(product.status);
               const minPrice = product.options.length
                 ? Math.min(...product.options.map((o) => o.price))
                 : null;
-
               return (
-                <Link key={product.id} to={`/products/${product.id}`}>
-                  <div className="group overflow-hidden rounded-xl bg-surface-container-lowest shadow-ambient transition-all duration-500 hover:-translate-y-2 hover:shadow-ambient-md">
-                    <div className="relative aspect-square overflow-hidden">
+                <Link key={product.id} to={`/products/${product.id}`} className="group">
+                  <div className="card-hover">
+                    <div className="card-image relative aspect-[3/4] overflow-hidden bg-surface-muted">
                       {product.primary_image ? (
                         <img
                           src={product.primary_image.thumbnail_url ?? product.primary_image.image_url}
                           alt={product.name}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
                           loading="lazy"
                         />
                       ) : (
                         <ImagePlaceholder className="h-full w-full" />
                       )}
-                      <span className="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 font-headline text-xs font-bold uppercase tracking-tighter text-on-primary">
-                        {status.label}
-                      </span>
+                      <span className="absolute left-3 top-3 badge badge-green">{status.label}</span>
                     </div>
-                    <div className="p-6">
-                      <h4 className="mb-1 font-headline text-lg font-bold text-on-surface">{product.name}</h4>
-                      <p className="text-xs text-on-surface-variant">{product.category.name}</p>
-                      <div className="mt-4 flex items-center justify-between">
+                    <div className="card-body p-5">
+                      <p className="text-caption text-on-subtle uppercase tracking-wide">{product.category.name}</p>
+                      <h3 className="mt-1 font-headline text-base font-bold text-on-bg">{product.name}</h3>
+                      <div className="mt-3 flex items-center justify-between">
                         {minPrice != null && (
-                          <span className="font-headline text-xl font-black text-on-surface">
+                          <span className="font-headline text-lg font-black text-primary">
                             {formatPrice(minPrice)}~
                           </span>
                         )}
                         <span
-                          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface transition-colors group-hover:bg-primary group-hover:text-on-primary"
+                          className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-muted text-on-muted transition-colors group-hover:bg-primary group-hover:text-white"
                           aria-hidden
                         >
-                          <ShoppingBag className="h-5 w-5" />
+                          <ShoppingBag className="h-4 w-4" />
                         </span>
                       </div>
                     </div>
@@ -225,12 +192,11 @@ function ProductsSection() {
           </div>
         )}
 
-        <Link
-          to="/products"
-          className="mt-12 flex justify-center font-headline font-bold text-on-surface-variant hover:text-primary-500 sm:hidden"
-        >
-          전체보기 +
-        </Link>
+        <div className="mt-10 text-center sm:hidden">
+          <Link to="/products" className="btn btn-secondary btn-md">
+            전체보기 <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -242,31 +208,27 @@ function JournalsSection() {
     queryFn: () => fetchJournals({ limit: 3, offset: 0 }),
   });
 
-  if (!isLoading && (!data?.items.length || data.items.length === 0)) {
-    return null;
-  }
+  if (!isLoading && (!data?.items.length || data.items.length === 0)) return null;
 
   return (
-    <section className="overflow-hidden bg-surface px-4 py-24 md:px-8">
-      <div className="mx-auto max-w-screen-2xl">
-        <div className="mb-20 text-center">
-          <h2 className="mb-4 font-headline text-sm font-bold uppercase tracking-[0.2em] text-tertiary">
-            The Journal
-          </h2>
-          <h3 className="font-headline text-4xl font-black text-on-surface md:text-5xl">농장의 사계절 기록</h3>
+    <section className="bg-surface section-py overflow-hidden">
+      <div className="container-site">
+        <div className="mb-14 text-center heading-group">
+          <span className="eyebrow justify-center before:hidden after:content-[''] after:block after:h-px after:w-6 after:bg-primary">The Journal</span>
+          <h2 className="text-h2 font-headline font-bold text-on-bg">농장의 사계절 기록</h2>
         </div>
 
         {isLoading ? (
-          <div className="grid gap-12 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-[28rem] rounded-xl" />
+              <Skeleton key={i} className="h-[28rem] rounded-2xl" />
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {data?.items.map((journal) => (
-              <Link key={journal.id} to={`/journals/${journal.id}`} className="group block cursor-pointer">
-                <div className="mb-6 overflow-hidden rounded-xl">
+              <Link key={journal.id} to={`/journals/${journal.id}`} className="group block">
+                <div className="overflow-hidden rounded-2xl mb-5">
                   {journal.primary_image ? (
                     <img
                       src={journal.primary_image.thumbnail_url ?? journal.primary_image.image_url}
@@ -275,26 +237,23 @@ function JournalsSection() {
                       loading="lazy"
                     />
                   ) : (
-                    <ImagePlaceholder className="aspect-[16/10] w-full rounded-xl" />
+                    <ImagePlaceholder className="aspect-[16/10] w-full rounded-2xl" />
                   )}
                 </div>
-                <span className="font-headline text-sm font-bold uppercase tracking-[0.2em] text-primary-500">
+                <time className="text-caption font-bold uppercase tracking-[0.1em] text-primary">
                   {formatShortDate(journal.created_at)}
-                </span>
-                <h4 className="mb-4 mt-3 font-headline text-2xl font-extrabold text-on-surface transition-colors group-hover:text-primary-500">
+                </time>
+                <h3 className="mt-2 font-headline text-xl font-bold text-on-bg transition-colors group-hover:text-primary line-clamp-2">
                   {journal.title}
-                </h4>
+                </h3>
               </Link>
             ))}
           </div>
         )}
 
-        <p className="mt-14 text-center">
-          <Link
-            to="/journals"
-            className="font-headline text-sm font-bold text-on-surface-variant underline-offset-4 hover:text-primary-500"
-          >
-            농장일지 전체보기
+        <p className="mt-12 text-center">
+          <Link to="/journals" className="btn btn-ghost btn-md">
+            농장일지 전체보기 <ArrowRight className="h-4 w-4" />
           </Link>
         </p>
       </div>
@@ -302,91 +261,73 @@ function JournalsSection() {
   );
 }
 
-/** 시안 Section 5: Trust — tertiary 배경 + 3열 아이콘 */
 function TrustSection() {
   const items = [
-    {
-      icon: Leaf,
-      title: '친환경 재배',
-      body: '화학 약품을 최소화하고 자연의 순리대로 키워 더 안전합니다.',
-    },
-    {
-      icon: Sprout,
-      title: '직접 수확',
-      body: '농부가 직접 고르고 수확하여 품질의 편차가 없습니다.',
-    },
-    {
-      icon: Package,
-      title: '당일 발송',
-      body: '수확 후 빠르게 발송하여 밭의 신선함을 그대로 유지합니다.',
-    },
+    { icon: Leaf, title: '친환경 재배', body: '화학 약품을 최소화하고 자연의 순리대로 키워 더 안전합니다.' },
+    { icon: Sprout, title: '직접 수확', body: '농부가 직접 고르고 수확하여 품질의 편차가 없습니다.' },
+    { icon: Package, title: '당일 발송', body: '수확 후 빠르게 발송하여 밭의 신선함을 그대로 유지합니다.' },
   ] as const;
 
   return (
-    <section className="border-y border-outline-variant/10 bg-tertiary-fixed/30 px-4 py-20 md:px-8">
-      <div className="mx-auto grid max-w-screen-xl grid-cols-1 gap-12 md:grid-cols-3">
-        {items.map(({ icon: Icon, title, body }) => (
-          <div key={title} className="flex flex-col items-center space-y-4 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-surface-container-lowest text-primary-500 shadow-sm">
-              <Icon className="h-8 w-8" strokeWidth={1.75} />
+    <section className="border-y border-border/40 bg-forest-50 section-py-sm">
+      <div className="container-site">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {items.map(({ icon: Icon, title, body }) => (
+            <div key={title} className="trust-item">
+              <div className="trust-icon-wrap">
+                <Icon className="h-6 w-6" strokeWidth={1.75} />
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-headline text-base font-bold text-on-bg">{title}</h4>
+                <p className="text-body-sm text-on-muted text-pretty">{body}</p>
+              </div>
             </div>
-            <h5 className="font-headline text-xl font-bold text-on-surface">{title}</h5>
-            <p className="text-on-surface-variant">{body}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-/** 시안 Section 6: Notice — 좌측 primary 보더 + Farm Notice */
 function NoticesSection() {
   const { data, isLoading } = useQuery({
     queryKey: noticeKeys.list({ limit: 5, offset: 0 }),
     queryFn: () => fetchNotices({ limit: 5, offset: 0 }),
   });
 
-  if (!isLoading && (!data?.items.length || data.items.length === 0)) {
-    return null;
-  }
+  if (!isLoading && (!data?.items.length || data.items.length === 0)) return null;
 
   return (
-    <section className="bg-surface-container-lowest px-4 py-16 md:px-8">
-      <div className="mx-auto max-w-screen-2xl">
+    <section className="bg-surface-muted section-py-sm">
+      <div className="container-site">
         {isLoading ? (
-          <Skeleton className="h-40 w-full rounded-xl" />
+          <Skeleton className="h-40 w-full rounded-2xl" />
         ) : (
-          <div className="flex flex-col items-stretch gap-10 border-l-4 border-primary pl-8 md:flex-row md:items-center md:gap-12 md:pl-10">
-            <div className="shrink-0">
-              <h3 className="font-headline text-2xl font-black uppercase tracking-tight text-on-surface">
-                Farm Notice
-              </h3>
+          <div className="flex flex-col gap-8 md:flex-row md:gap-12">
+            <div className="shrink-0 md:w-48">
+              <h3 className="font-headline text-xl font-black text-on-bg">Farm Notice</h3>
               <Link
                 to="/notices"
-                className="mt-2 inline-block font-headline text-sm font-bold text-on-surface-variant hover:text-primary-500"
+                className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-on-subtle hover:text-primary transition-colors"
               >
-                전체보기
+                전체보기 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
-            <div className="min-w-0 flex-1 space-y-4">
-              {data?.items.map((notice, idx) => (
-                <div key={notice.id}>
-                  <Link
-                    to={`/notices/${notice.id}`}
-                    className="group flex flex-col justify-between gap-1 py-1 sm:flex-row sm:items-center"
-                  >
-                    <span className="flex min-w-0 items-center gap-2 font-medium text-on-surface group-hover:text-primary-500">
-                      {notice.is_pinned && <Pin className="h-3.5 w-3.5 shrink-0 text-persimmon-500" />}
-                      <span className="truncate">{notice.title}</span>
-                    </span>
-                    <time className="shrink-0 text-sm text-on-surface-variant">
-                      {formatShortDate(notice.created_at)}
-                    </time>
-                  </Link>
-                  {idx < (data?.items.length ?? 0) - 1 && (
-                    <div className="mt-4 h-px w-full bg-outline-variant/20" />
-                  )}
-                </div>
+            <div className="flex-1 min-w-0 divide-y divide-border/60">
+              {data?.items.map((notice) => (
+                <Link
+                  key={notice.id}
+                  to={`/notices/${notice.id}`}
+                  className="group flex items-center justify-between gap-4 py-3.5 hover:text-primary transition-colors"
+                >
+                  <span className="flex min-w-0 items-center gap-2">
+                    {notice.is_pinned && <Pin className="h-3.5 w-3.5 shrink-0 text-accent-warm" />}
+                    <span className="truncate text-sm font-medium text-on-surface group-hover:text-primary">{notice.title}</span>
+                  </span>
+                  <time className="shrink-0 text-xs text-on-subtle">
+                    {formatShortDate(notice.created_at)}
+                  </time>
+                </Link>
               ))}
             </div>
           </div>
@@ -398,44 +339,31 @@ function NoticesSection() {
 
 function ContactSection() {
   return (
-    <section className="bg-surface px-4 py-24 md:px-8 md:py-28">
-      <div className="mx-auto max-w-screen-2xl">
-        <p className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-tertiary">Visit</p>
-        <h2 className="mt-2 font-headline text-3xl font-extrabold text-on-surface md:text-4xl">
-          연락처 / 오시는 길
-        </h2>
-        <div className="mt-12 grid gap-10 lg:grid-cols-2">
-          <div className="space-y-8">
-            <div className="flex items-start gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-container-high text-primary-500">
-                <MapPin className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="font-headline font-bold text-on-surface">주소</p>
-                <p className="mt-1 text-sm leading-relaxed text-on-surface-variant">{FARM_INFO.address}</p>
+    <section className="bg-surface section-py">
+      <div className="container-site">
+        <div className="heading-group mb-12">
+          <span className="eyebrow">Visit</span>
+          <h2 className="text-h2 font-headline font-bold text-on-bg">연락처 / 오시는 길</h2>
+        </div>
+        <div className="grid gap-10 lg:grid-cols-2">
+          <div className="space-y-7">
+            {[
+              { icon: MapPin, label: '주소', value: FARM_INFO.address },
+              { icon: Phone, label: '연락처', value: FARM_INFO.contactDisplay },
+              { icon: Clock, label: '운영 시간', value: FARM_INFO.hours },
+            ].map(({ icon: Icon, label, value }) => (
+              <div key={label} className="flex items-start gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-forest-50 text-primary">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <div>
+                  <p className="font-headline text-sm font-bold text-on-bg">{label}</p>
+                  <p className="mt-1 whitespace-pre-line text-sm leading-relaxed text-on-muted">{value}</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-container-high text-primary-500">
-                <Phone className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="font-headline font-bold text-on-surface">연락처</p>
-                <p className="mt-1 text-sm text-on-surface-variant">{FARM_INFO.contactDisplay}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-container-high text-primary-500">
-                <Clock className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="font-headline font-bold text-on-surface">운영 시간</p>
-                <p className="mt-1 whitespace-pre-line text-sm text-on-surface-variant">{FARM_INFO.hours}</p>
-              </div>
-            </div>
+            ))}
           </div>
-
-          <div className="flex min-h-[14rem] items-center justify-center rounded-xl bg-surface-container-high text-center text-sm text-on-surface-variant">
+          <div className="flex min-h-[14rem] items-center justify-center rounded-2xl bg-stone-100 text-center text-sm text-on-subtle">
             지도 영역 (추후 네이버/카카오 지도 연동)
           </div>
         </div>

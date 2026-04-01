@@ -50,8 +50,9 @@ export default function ProductListPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Hero Banner */}
       <section className="px-4 pt-8 pb-10 md:px-8 md:pt-12">
-        <div className="relative mx-auto max-w-screen-2xl overflow-hidden rounded-[2.5rem] bg-surface-container-low px-6 py-14 text-center md:p-24">
+        <div className="relative mx-auto max-w-[82rem] overflow-hidden rounded-3xl bg-surface-muted px-6 py-14 text-center md:p-20">
           <div
             className="pointer-events-none absolute inset-0 opacity-10"
             style={{
@@ -61,30 +62,26 @@ export default function ProductListPage() {
             }}
             aria-hidden
           />
-          <span className="relative z-10 mb-6 inline-block font-headline text-xs font-bold uppercase tracking-[0.2em] text-primary-500">
+          <span className="relative z-10 eyebrow justify-center mb-5">
             Seasonal Selection
           </span>
-          <h1 className="relative z-10 mx-auto max-w-4xl font-headline text-4xl font-extrabold tracking-tighter text-on-background md:text-6xl lg:text-7xl">
+          <h1 className="relative z-10 font-display text-display-lg font-extrabold tracking-tighter text-on-bg text-balance">
             {FARM_INFO.name}에서 가장 신선한 수확
           </h1>
-          <p className="relative z-10 mx-auto mt-6 max-w-2xl font-body text-lg leading-relaxed text-secondary">
+          <p className="relative z-10 mx-auto mt-5 max-w-xl font-body text-body-lg text-on-muted text-pretty">
             흙에서 주방까지, 중간 유통 없이 정직하게 전합니다.
           </p>
         </div>
       </section>
 
-      <div className="mx-auto max-w-screen-2xl px-4 pb-16 md:px-8 md:pb-20">
+      <div className="container-site pb-16 md:pb-20">
+        {/* Category Filter */}
         {categoriesQuery.data && (
-          <div className="mt-10 flex flex-wrap gap-2">
+          <div className="mt-6 flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => handleCategoryChange(undefined)}
-              className={cn(
-                'rounded-full px-5 py-2 font-headline text-sm font-bold transition-all',
-                categoryId === undefined
-                  ? 'bg-primary-500 text-on-primary shadow-ambient'
-                  : 'bg-surface-container-lowest text-on-surface-variant shadow-ambient hover:bg-surface-container-high',
-              )}
+              className={cn(categoryId === undefined ? 'chip-active' : 'chip')}
             >
               전체
             </button>
@@ -93,12 +90,7 @@ export default function ProductListPage() {
                 key={cat.id}
                 type="button"
                 onClick={() => handleCategoryChange(cat.id)}
-                className={cn(
-                  'rounded-full px-5 py-2 font-headline text-sm font-bold transition-all',
-                  categoryId === cat.id
-                    ? 'bg-primary-500 text-on-primary shadow-ambient'
-                    : 'bg-surface-container-lowest text-on-surface-variant shadow-ambient hover:bg-surface-container-high',
-                )}
+                className={cn(categoryId === cat.id ? 'chip-active' : 'chip')}
               >
                 {cat.name}
               </button>
@@ -106,10 +98,11 @@ export default function ProductListPage() {
           </div>
         )}
 
+        {/* Products Grid */}
         {productsQuery.isLoading ? (
           <div className="mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-80 rounded-xl" />
+              <Skeleton key={i} className="h-80 rounded-2xl" />
             ))}
           </div>
         ) : !productsQuery.data?.items.length ? (
@@ -121,7 +114,7 @@ export default function ProductListPage() {
           </div>
         ) : (
           <>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {productsQuery.data.items.map((product) => {
                 const status = getProductStatus(product.status);
                 const minPrice = product.options.length
@@ -130,34 +123,34 @@ export default function ProductListPage() {
 
                 return (
                   <Link key={product.id} to={`/products/${product.id}`}>
-                    <Card className="group h-full overflow-hidden">
+                    <Card hover className="group h-full overflow-hidden">
                       <div className="p-2">
                         {product.primary_image ? (
                           <img
                             src={product.primary_image.thumbnail_url ?? product.primary_image.image_url}
                             alt={product.name}
-                            className="aspect-square w-full rounded-lg object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="aspect-square w-full rounded-xl object-cover transition-transform duration-700 group-hover:scale-105"
                             loading="lazy"
                           />
                         ) : (
-                          <ImagePlaceholder className="aspect-square w-full rounded-lg" />
+                          <ImagePlaceholder className="aspect-square w-full rounded-xl" />
                         )}
                       </div>
-                      <div className="px-5 pb-6 pt-0">
+                      <div className="px-5 pb-6 pt-1">
                         <div className="flex items-center gap-2">
                           <Badge variant={status.variant}>{status.label}</Badge>
-                          <span className="text-xs font-medium uppercase tracking-wide text-on-surface-variant">
+                          <span className="text-caption font-semibold uppercase tracking-wide text-on-subtle">
                             {product.category.name}
                           </span>
                         </div>
-                        <h3 className="mt-3 font-headline text-lg font-bold text-on-surface">{product.name}</h3>
+                        <h3 className="mt-2 font-headline text-base font-bold text-on-bg">{product.name}</h3>
                         {minPrice != null && (
-                          <p className="mt-2 font-headline text-lg font-black text-primary-500">
+                          <p className="mt-1.5 font-headline text-base font-black text-primary">
                             {formatPrice(minPrice)}~
                           </p>
                         )}
                         {product.harvest_start && product.harvest_end && (
-                          <p className="mt-2 text-xs text-on-surface-variant">
+                          <p className="mt-1.5 text-caption text-on-subtle">
                             수확 {product.harvest_start} ~ {product.harvest_end}
                           </p>
                         )}

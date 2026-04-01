@@ -21,22 +21,24 @@ export default function JournalListPage() {
   });
 
   return (
-    <div className="bg-surface-container-low">
-      <div className="mx-auto max-w-screen-2xl px-4 py-16 md:px-8 md:py-20">
-        <p className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-tertiary">Journal</p>
-        <h1 className="mt-2 font-headline text-4xl font-extrabold text-on-surface">농장일지</h1>
-        <p className="mt-3 max-w-xl font-body text-lg text-on-surface-variant">
-          농장의 일상과 성장 이야기를 기록합니다
-        </p>
+    <div className="min-h-screen bg-surface-muted">
+      <div className="container-site py-16 md:py-20">
+        <div className="heading-group mb-12">
+          <span className="eyebrow">Journal</span>
+          <h1 className="text-h1 font-headline font-extrabold text-on-bg mt-2">농장일지</h1>
+          <p className="mt-3 max-w-xl font-body text-body-lg text-on-muted">
+            농장의 일상과 성장 이야기를 기록합니다
+          </p>
+        </div>
 
         {isLoading ? (
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-72 rounded-xl" />
+              <Skeleton key={i} className="h-72 rounded-2xl" />
             ))}
           </div>
         ) : !data?.items.length ? (
-          <div className="mt-16">
+          <div className="mt-8">
             <EmptyState
               title="아직 작성된 일지가 없습니다"
               description="농장일지가 곧 업데이트될 예정입니다."
@@ -44,27 +46,27 @@ export default function JournalListPage() {
           </div>
         ) : (
           <>
-            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {data.items.map((journal) => (
                 <Link key={journal.id} to={`/journals/${journal.id}`}>
-                  <Card className="group h-full overflow-hidden">
+                  <Card hover className="group h-full overflow-hidden">
                     <div className="p-2">
                       {journal.primary_image ? (
                         <img
                           src={journal.primary_image.thumbnail_url ?? journal.primary_image.image_url}
                           alt={journal.title}
-                          className="aspect-video w-full rounded-lg object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="aspect-video w-full rounded-xl object-cover transition-transform duration-700 group-hover:scale-105"
                           loading="lazy"
                         />
                       ) : (
-                        <ImagePlaceholder className="aspect-video w-full rounded-lg" />
+                        <ImagePlaceholder className="aspect-video w-full rounded-xl" />
                       )}
                     </div>
-                    <div className="px-5 pb-6 pt-0">
-                      <h3 className="line-clamp-2 font-headline text-lg font-bold text-on-surface">
+                    <div className="px-5 pb-6 pt-1">
+                      <h3 className="line-clamp-2 font-headline text-base font-bold text-on-bg">
                         {journal.title}
                       </h3>
-                      <p className="mt-2 text-xs text-on-surface-variant">{formatDate(journal.created_at)}</p>
+                      <p className="mt-2 text-caption text-on-subtle">{formatDate(journal.created_at)}</p>
                     </div>
                   </Card>
                 </Link>

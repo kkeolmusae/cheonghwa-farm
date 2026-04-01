@@ -21,10 +21,10 @@ export default function JournalDetailPage() {
   if (isError || !journal) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
-        <p className="text-on-surface-variant">일지를 찾을 수 없습니다.</p>
+        <p className="text-on-muted">일지를 찾을 수 없습니다.</p>
         <Link
           to="/journals"
-          className="mt-4 inline-block font-headline text-sm font-bold text-primary-500 hover:text-primary-600"
+          className="mt-4 inline-block font-headline text-sm font-bold text-primary hover:text-primary-dark"
         >
           목록으로 돌아가기
         </Link>
@@ -38,18 +38,18 @@ export default function JournalDetailPage() {
     <article className="mx-auto max-w-3xl px-4 py-10 md:px-8 md:py-14">
       <Link
         to="/journals"
-        className="mb-8 inline-flex items-center gap-1 font-headline text-sm font-medium text-on-surface-variant transition-colors hover:text-on-surface"
+        className="mb-8 inline-flex items-center gap-1 font-headline text-sm font-medium text-on-muted transition-colors hover:text-on-surface"
       >
         <ChevronLeft className="h-4 w-4" />
         농장일지 목록
       </Link>
 
       <header>
-        <h1 className="font-headline text-3xl font-extrabold text-on-surface md:text-4xl">{journal.title}</h1>
-        <time className="mt-3 block text-sm text-on-surface-variant">{formatDate(journal.created_at)}</time>
+        <h1 className="font-headline text-h1 font-extrabold text-on-bg">{journal.title}</h1>
+        <time className="mt-3 block text-sm text-on-muted">{formatDate(journal.created_at)}</time>
       </header>
 
-      <div className="mt-10 whitespace-pre-line font-body text-lg leading-relaxed text-on-surface-variant">
+      <div className="mt-10 whitespace-pre-line font-body text-body-lg leading-relaxed text-on-muted">
         {journal.content}
       </div>
 
@@ -60,17 +60,17 @@ export default function JournalDetailPage() {
               key={img.id}
               src={img.image_url}
               alt={journal.title}
-              className="w-full rounded-xl object-cover shadow-ambient"
+              className="w-full rounded-2xl object-cover shadow-sm"
               loading="lazy"
             />
           ))}
         </div>
       )}
 
-      <div className="mt-14 pt-10">
+      <div className="mt-14 border-t border-border/60 pt-10">
         <Link
           to="/journals"
-          className="inline-flex items-center gap-1 font-headline text-sm font-bold text-primary-500 hover:text-primary-600"
+          className="inline-flex items-center gap-1 font-headline text-sm font-bold text-primary hover:text-primary-dark"
         >
           <ChevronLeft className="h-4 w-4" />
           목록으로 돌아가기
@@ -91,7 +91,7 @@ function JournalDetailSkeleton() {
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-2/3" />
       </div>
-      <Skeleton className="mt-10 aspect-video w-full rounded-xl" />
+      <Skeleton className="mt-10 aspect-video w-full rounded-2xl" />
     </div>
   );
 }

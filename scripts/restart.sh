@@ -18,6 +18,12 @@ restart_frontend() {
   echo "Frontend restarted."
 }
 
+restart_admin() {
+  echo "Restarting admin..."
+  docker compose restart admin
+  echo "Admin restarted."
+}
+
 case "${1:-}" in
   backend)
     restart_backend
@@ -25,16 +31,21 @@ case "${1:-}" in
   frontend)
     restart_frontend
     ;;
+  admin)
+    restart_admin
+    ;;
   "")
     restart_backend
     restart_frontend
+    restart_admin
     echo "All services restarted."
     ;;
   *)
-    echo "Usage: $0 [backend|frontend]"
-    echo "  no args   - restart backend and frontend"
+    echo "Usage: $0 [backend|frontend|admin]"
+    echo "  no args   - restart backend, frontend and admin"
     echo "  backend   - restart backend only"
     echo "  frontend  - restart frontend only"
+    echo "  admin     - restart admin only"
     exit 1
     ;;
 esac

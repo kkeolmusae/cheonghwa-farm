@@ -22,10 +22,10 @@ export default function NoticeDetailPage() {
   if (isError || !notice) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-20 text-center md:px-8">
-        <p className="text-on-surface-variant">공지사항을 찾을 수 없습니다.</p>
+        <p className="text-on-muted">공지사항을 찾을 수 없습니다.</p>
         <Link
           to="/notices"
-          className="mt-4 inline-block font-headline text-sm font-bold text-primary-500 hover:text-primary-600"
+          className="mt-4 inline-block font-headline text-sm font-bold text-primary hover:text-primary-dark"
         >
           목록으로 돌아가기
         </Link>
@@ -37,7 +37,7 @@ export default function NoticeDetailPage() {
     <article className="mx-auto max-w-3xl px-4 py-10 md:px-8 md:py-14">
       <Link
         to="/notices"
-        className="mb-8 inline-flex items-center gap-1 font-headline text-sm font-medium text-on-surface-variant transition-colors hover:text-on-surface"
+        className="mb-8 inline-flex items-center gap-1 font-headline text-sm font-medium text-on-muted transition-colors hover:text-on-surface"
       >
         <ChevronLeft className="h-4 w-4" />
         공지사항 목록
@@ -52,20 +52,20 @@ export default function NoticeDetailPage() {
             </Badge>
           )}
         </div>
-        <h1 className="mt-3 font-headline text-3xl font-extrabold text-on-surface md:text-4xl">
+        <h1 className="mt-3 font-headline text-h1 font-extrabold text-on-bg">
           {notice.title}
         </h1>
-        <time className="mt-3 block text-sm text-on-surface-variant">{formatDate(notice.created_at)}</time>
+        <time className="mt-3 block text-sm text-on-muted">{formatDate(notice.created_at)}</time>
       </header>
 
-      <div className="mt-10 whitespace-pre-line font-body text-lg leading-relaxed text-on-surface-variant">
+      <div className="mt-10 whitespace-pre-line font-body text-body-lg leading-relaxed text-on-muted">
         {notice.content}
       </div>
 
-      <div className="mt-14 pt-10">
+      <div className="mt-14 border-t border-border/60 pt-10">
         <Link
           to="/notices"
-          className="inline-flex items-center gap-1 font-headline text-sm font-bold text-primary-500 hover:text-primary-600"
+          className="inline-flex items-center gap-1 font-headline text-sm font-bold text-primary hover:text-primary-dark"
         >
           <ChevronLeft className="h-4 w-4" />
           목록으로 돌아가기

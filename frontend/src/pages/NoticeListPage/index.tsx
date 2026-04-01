@@ -25,48 +25,50 @@ export default function NoticeListPage() {
   const sorted = [...pinned, ...regular];
 
   return (
-    <div className="bg-surface">
+    <div className="min-h-screen bg-surface">
       <div className="mx-auto max-w-3xl px-4 py-16 md:px-8 md:py-20">
-        <p className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-tertiary">Notice</p>
-        <h1 className="mt-2 font-headline text-4xl font-extrabold text-on-surface">공지사항</h1>
-        <p className="mt-3 font-body text-lg text-on-surface-variant">
-          농장의 소식과 안내사항을 확인하세요
-        </p>
+        <div className="heading-group mb-10">
+          <span className="eyebrow">Notice</span>
+          <h1 className="text-h1 font-headline font-extrabold text-on-bg mt-2">공지사항</h1>
+          <p className="mt-3 font-body text-body-lg text-on-muted">
+            농장의 소식과 안내사항을 확인하세요
+          </p>
+        </div>
 
         {isLoading ? (
-          <div className="mt-10 space-y-3">
+          <div className="space-y-3">
             {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-16 rounded-xl" />
+              <Skeleton key={i} className="h-14 rounded-xl" />
             ))}
           </div>
         ) : !data?.items.length ? (
-          <div className="mt-16">
-            <EmptyState
-              title="아직 공지사항이 없습니다"
-              description="새로운 소식이 등록되면 이곳에서 확인할 수 있습니다."
-            />
-          </div>
+          <EmptyState
+            title="아직 공지사항이 없습니다"
+            description="새로운 소식이 등록되면 이곳에서 확인할 수 있습니다."
+          />
         ) : (
           <>
-            <ul className="mt-12 space-y-3">
+            <ul className="border-t border-border/50">
               {sorted.map((notice) => (
                 <li key={notice.id}>
                   <Link
                     to={`/notices/${notice.id}`}
-                    className="flex flex-col gap-1 rounded-xl bg-surface-container-low px-5 py-4 shadow-ambient transition-all hover:shadow-ambient-md sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                    className="group flex items-center justify-between gap-4 border-b border-border/50 py-4 transition-colors hover:text-primary"
                   >
                     <span className="flex min-w-0 items-center gap-2">
-                      {notice.is_pinned && <Pin className="h-3.5 w-3.5 shrink-0 text-persimmon-500" />}
+                      {notice.is_pinned && (
+                        <Pin className="h-3.5 w-3.5 shrink-0 text-accent-warm" />
+                      )}
                       <span
                         className={cn(
-                          'truncate font-headline text-sm',
-                          notice.is_pinned ? 'font-bold text-on-surface' : 'font-medium text-on-surface',
+                          'truncate text-sm transition-colors group-hover:text-primary',
+                          notice.is_pinned ? 'font-bold text-on-bg' : 'font-medium text-on-surface',
                         )}
                       >
                         {notice.title}
                       </span>
                     </span>
-                    <time className="shrink-0 text-xs text-on-surface-variant sm:text-right">
+                    <time className="shrink-0 text-caption text-on-subtle">
                       {formatShortDate(notice.created_at)}
                     </time>
                   </Link>
