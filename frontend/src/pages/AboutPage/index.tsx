@@ -1,4 +1,5 @@
 import { Leaf, Droplets, Sun, Sprout, MapPin, CheckCircle2 } from 'lucide-react';
+import KakaoMap from '@/components/common/KakaoMap';
 import { Card, CardContent } from '@/components/ui/Card';
 import { FARM_INFO } from '@/constants/farm';
 
@@ -155,9 +156,11 @@ function LocationSection() {
               <p className="mt-2 text-sm text-on-muted">방문 전 전화 예약 부탁드립니다.</p>
             </div>
           </div>
-          <div className="flex min-h-[12rem] items-center justify-center rounded-2xl bg-stone-100 text-sm text-on-subtle">
-            지도 영역 (추후 네이버/카카오 지도 연동)
-          </div>
+          <KakaoMap
+            address={FARM_INFO.address}
+            title={FARM_INFO.name}
+            className="min-h-[12rem]"
+          />
         </div>
       </div>
     </section>

@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { ShoppingBag, TrendingUp, BookOpen, Megaphone } from 'lucide-react';
+import { ShoppingBag, TrendingUp, BookOpen, Megaphone, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { listProducts, productKeys } from '@/api/products';
 import { listJournals, journalKeys } from '@/api/journals';
 import { listNotices, noticeKeys } from '@/api/notices';
+import { getOrders, orderKeys } from '@/api/orders';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -45,6 +46,20 @@ export default function DashboardPage() {
     queryFn: () => listNotices({ offset: 0, limit: 1 }),
   });
 
+  const pendingOrdersQuery = useQuery({
+    queryKey: orderKeys.list({ status: 'pending', offset: 0, limit: 1 }),
+    queryFn: () => getOrders({ status: 'pending', offset: 0, limit: 1 }),
+  });
+
+  const paymentPendingOrdersQuery = useQuery({
+    queryKey: orderKeys.list({ status: 'payment_pending', offset: 0, limit: 1 }),
+    queryFn: () => getOrders({ status: 'payment_pending', offset: 0, limit: 1 }),
+  });
+
+  const pendingOrderCount =
+    (pendingOrdersQuery.data?.total ?? 0) + (paymentPendingOrdersQuery.data?.total ?? 0);
+  const isOrdersLoading = pendingOrdersQuery.isLoading || paymentPendingOrdersQuery.isLoading;
+
   const stats = [
     {
       label: '전체 상품',
@@ -72,6 +87,13 @@ export default function DashboardPage() {
       icon: Megaphone,
       color: 'bg-purple-100 text-purple-600',
     },
+    {
+      label: '미처리 주문',
+      value: isOrdersLoading ? '-' : pendingOrderCount,
+      icon: Package,
+      color: 'bg-red-100 text-red-600',
+      href: '/orders?status=pending',
+    },
   ];
 
   const getPriceRange = (options: { price: number }[]) => {
@@ -91,22 +113,36 @@ export default function DashboardPage() {
         <p className="mt-1 text-sm text-gray-500">오늘의 농장 현황을 확인해보세요.</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((stat) => (
-          <Card key={stat.label} className="flex items-center gap-4">
-            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${stat.color}`}>
-              <stat.icon className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">{stat.label}</p>
-              {allProductsQuery.isLoading ? (
-                <Skeleton className="mt-1 h-7 w-12" />
-              ) : (
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              )}
-            </div>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        {stats.map((stat) => {
+          const cardContent = (
+            <>
+              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${stat.color}`}>
+                <stat.icon className="h-6 w-6" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">{stat.label}</p>
+                {allProductsQuery.isLoading ? (
+                  <Skeleton className="mt-1 h-7 w-12" />
+                ) : (
+                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                )}
+              </div>
+            </>
+          );
+
+          return 'href' in stat && stat.href ? (
+            <Link key={stat.label} to={stat.href}>
+              <Card className="flex items-center gap-4 transition-shadow hover:shadow-md">
+                {cardContent}
+              </Card>
+            </Link>
+          ) : (
+            <Card key={stat.label} className="flex items-center gap-4">
+              {cardContent}
+            </Card>
+          );
+        })}
       </div>
 
       <Card>

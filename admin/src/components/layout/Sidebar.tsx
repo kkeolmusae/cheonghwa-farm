@@ -8,6 +8,8 @@ import {
   X,
   Sprout,
   ImageIcon,
+  Package,
+  Tag,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/utils/cn';
@@ -15,6 +17,8 @@ import { cn } from '@/utils/cn';
 const navItems = [
   { to: '/', label: '대시보드', icon: LayoutDashboard, end: true },
   { to: '/products', label: '상품 관리', icon: ShoppingBag, end: false },
+  { to: '/categories', label: '카테고리 관리', icon: Tag, end: false },
+  { to: '/orders', label: '주문 관리', icon: Package, end: false },
   { to: '/journals', label: '농장일지', icon: BookOpen, end: false },
   { to: '/notices', label: '공지사항', icon: Megaphone, end: false },
   { to: '/site-images', label: '메인 이미지', icon: ImageIcon, end: false },

@@ -12,6 +12,7 @@ import { formatPrice, formatShortDate } from '@/utils/format';
 import { getProductStatus } from '@/constants/status';
 import { FARM_INFO } from '@/constants/farm';
 import { STITCH_FARM_STORY_IMAGE, STITCH_HERO_IMAGE } from '@/constants/stitchAssets';
+import KakaoMap from '@/components/common/KakaoMap';
 
 export default function HomePage() {
   const { data: siteImg } = useQuery({
@@ -363,9 +364,11 @@ function ContactSection() {
               </div>
             ))}
           </div>
-          <div className="flex min-h-[14rem] items-center justify-center rounded-2xl bg-stone-100 text-center text-sm text-on-subtle">
-            지도 영역 (추후 네이버/카카오 지도 연동)
-          </div>
+          <KakaoMap
+            address={FARM_INFO.address}
+            title={FARM_INFO.name}
+            className="min-h-[14rem]"
+          />
         </div>
       </div>
     </section>

@@ -27,10 +27,38 @@ class Settings(BaseSettings):
     ADMIN_PASSWORD: str = "admin1234"
     ADMIN_NAME: str = "농장관리자"
 
+    # SMS (알리고)
+    ALIGO_API_KEY: str = ""
+    ALIGO_USER_ID: str = ""
+    ALIGO_SENDER: str = ""
+    ADMIN_PHONE: str = ""
+
+    # 무통장 입금 계좌 정보
+    BANK_ACCOUNT: str = "농협 716-12-338141"
+    BANK_HOLDER: str = ""
+
+    # AWS S3 이미지 스토리지
+    USE_S3: bool = False  # True로 설정하면 로컬 대신 S3 사용
+    AWS_REGION: str = "ap-northeast-2"
+    S3_BUCKET_NAME: str = ""
+    S3_CDN_BASE_URL: str = ""  # CloudFront URL (예: https://cdn.cheonghwa-farm.com)
+    # EC2 IAM Role 사용 시 불필요. 로컬 S3 테스트용
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+
+    # 주문 관련 설정
+    PAYMENT_DEADLINE_HOURS: int = 48
+    JEJU_ADDITIONAL_FEE: int = 3000
+    REMOTE_AREA_ADDITIONAL_FEE: int = 5000
+
     @computed_field
     @property
     def cors_origins(self) -> list[str]:
-        return [origin.strip() for origin in self.BACKEND_CORS_ORIGINS.split(",") if origin.strip()]
+        return [
+            origin.strip()
+            for origin in self.BACKEND_CORS_ORIGINS.split(",")
+            if origin.strip()
+        ]
 
     model_config = {"env_file": ".env", "case_sensitive": True}
 

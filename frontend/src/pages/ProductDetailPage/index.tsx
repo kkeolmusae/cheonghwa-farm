@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, Truck, Calendar } from "lucide-react";
+import { ChevronLeft, Minus, Plus, Truck, Calendar } from "lucide-react";
 import type { Product } from "@/types/product";
 
 import { fetchProduct, productKeys } from "@/api/products";
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ImagePlaceholder } from "@/components/ui/ImagePlaceholder";
+import { OrderModal } from "@/components/order/OrderModal";
 import { formatPrice } from "@/utils/format";
 import { getProductStatus } from "@/constants/status";
 import { cn } from "@/utils/cn";
@@ -45,6 +46,8 @@ export default function ProductDetailPage() {
 
 function ProductDetail({ product }: { product: Product }) {
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(product.options[0]?.id ?? null);
+  const [quantity, setQuantity] = useState(1);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   const selectedOption = product.options.find((o) => o.id === selectedOptionId);
   const status = getProductStatus(product.status);
@@ -142,10 +145,55 @@ function ProductDetail({ product }: { product: Product }) {
               </div>
             </div>
 
-            <Button size="lg" className="mt-8 w-full" disabled={!isSellable || !selectedOption}>
+            {/* 수량 선택 */}
+            {isSellable && selectedOption && (
+              <div className="mt-8 flex items-center gap-4">
+                <span className="font-headline text-sm font-bold text-on-bg">수량</span>
+                <div className="flex items-center gap-0 overflow-hidden rounded-xl border border-border/60">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    disabled={quantity <= 1}
+                    className="flex h-10 w-10 items-center justify-center text-on-muted transition-colors hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="수량 줄이기"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="flex h-10 min-w-[3rem] items-center justify-center border-x border-border/60 font-headline text-sm font-bold text-on-bg">
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.min(99, q + 1))}
+                    disabled={quantity >= 99}
+                    className="flex h-10 w-10 items-center justify-center text-on-muted transition-colors hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="수량 늘리기"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <Button
+              size="lg"
+              className="mt-4 w-full"
+              disabled={!isSellable || !selectedOption}
+              onClick={() => isSellable && selectedOption && setIsOrderModalOpen(true)}
+            >
               {isSellable ? "주문하기" : "현재 주문이 불가합니다"}
             </Button>
             {!isSellable && <p className="mt-3 text-center text-xs text-on-muted">판매 중인 상품만 주문할 수 있습니다.</p>}
+
+            {isOrderModalOpen && selectedOption && (
+              <OrderModal
+                isOpen={isOrderModalOpen}
+                onClose={() => setIsOrderModalOpen(false)}
+                product={product}
+                selectedOption={selectedOption}
+                quantity={quantity}
+              />
+            )}
           </div>
         </div>
 

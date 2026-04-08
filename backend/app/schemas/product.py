@@ -19,6 +19,11 @@ class CategoryResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class CategoryUpdate(BaseModel):
+    name: str | None = Field(None, max_length=100)
+    sort_order: int | None = None
+
+
 # --- ProductOption ---
 
 class ProductOptionCreate(BaseModel):

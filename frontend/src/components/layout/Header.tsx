@@ -5,11 +5,12 @@ import { FARM_INFO } from '@/constants/farm';
 import { cn } from '@/utils/cn';
 
 const NAV_ITEMS = [
-  { to: '/',         label: '홈',     end: true  },
-  { to: '/about',    label: '농장소개', end: false },
-  { to: '/products', label: '농작물',  end: false },
-  { to: '/journals', label: '농장일지', end: false },
-  { to: '/notices',  label: '공지사항', end: false },
+  { to: '/',             label: '홈',     end: true  },
+  { to: '/about',        label: '농장소개', end: false },
+  { to: '/products',     label: '농작물',  end: false },
+  { to: '/journals',     label: '농장일지', end: false },
+  { to: '/notices',      label: '공지사항', end: false },
+  { to: '/order/status', label: '주문 조회', end: false },
 ] as const;
 
 export function Header() {

@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1 import api_router
 from app.core.config import settings
 from app.core.database import async_session_factory
+from app.services.scheduler_service import create_scheduler
 from app.services.seed_service import seed_admin, seed_categories
 
 logging.basicConfig(
@@ -24,7 +25,14 @@ async def lifespan(app: FastAPI):
     async with async_session_factory() as db:
         await seed_admin(db)
         await seed_categories(db)
+
+    scheduler = create_scheduler(async_session_factory)
+    scheduler.start()
+    logger.info("스케줄러 시작: 만료 주문 자동 취소 (1시간 간격)")
+
     yield
+
+    scheduler.shutdown()
     logger.info("애플리케이션 종료")
 
 
