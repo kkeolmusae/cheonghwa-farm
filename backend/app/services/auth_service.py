@@ -1,3 +1,4 @@
+import httpx
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,6 +10,7 @@ from app.core.security import (
     verify_token,
 )
 from app.models.admin import Admin
+from app.models.allowed_google_email import AllowedGoogleEmail
 from app.schemas.auth import TokenResponse
 
 
@@ -35,6 +37,57 @@ def create_tokens(admin: Admin) -> TokenResponse:
     )
     refresh_token = create_refresh_token(subject=admin.id)
     return TokenResponse(access_token=access_token, refresh_token=refresh_token)
+
+
+async def google_login(db: AsyncSession, credential: str) -> TokenResponse:
+    """Google OAuth access token으로 userinfo를 조회 후 허용된 계정이면 JWT 발급."""
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            headers={"Authorization": f"Bearer {credential}"},
+            timeout=10,
+        )
+
+    if resp.status_code != 200:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="유효하지 않은 Google 토큰입니다.",
+        )
+
+    info = resp.json()
+    email: str = info.get("email", "")
+    google_id: str = info.get("sub", "")
+    name: str = info.get("name") or email.split("@")[0]
+
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google 계정에서 이메일 정보를 가져올 수 없습니다.",
+        )
+
+    # 화이트리스트 확인
+    result = await db.execute(
+        select(AllowedGoogleEmail).where(AllowedGoogleEmail.email == email)
+    )
+    if result.scalar_one_or_none() is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="접근이 허용되지 않은 Google 계정입니다.",
+        )
+
+    # Admin upsert
+    result = await db.execute(select(Admin).where(Admin.email == email))
+    admin = result.scalar_one_or_none()
+    if admin is None:
+        admin = Admin(email=email, name=name, google_id=google_id, password_hash=None)
+        db.add(admin)
+    else:
+        if admin.google_id != google_id:
+            admin.google_id = google_id
+    await db.commit()
+    await db.refresh(admin)
+
+    return create_tokens(admin)
 
 
 async def refresh_tokens(db: AsyncSession, refresh_token: str) -> TokenResponse:

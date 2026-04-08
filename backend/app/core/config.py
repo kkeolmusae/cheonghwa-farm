@@ -46,6 +46,9 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY_ID: str = ""
     AWS_SECRET_ACCESS_KEY: str = ""
 
+    # Google OAuth
+    GOOGLE_CLIENT_ID: str = ""
+
     # 주문 관련 설정
     PAYMENT_DEADLINE_HOURS: int = 48
     JEJU_ADDITIONAL_FEE: int = 3000

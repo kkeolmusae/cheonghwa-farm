@@ -12,3 +12,8 @@ export async function refreshToken(token: string): Promise<TokenResponse> {
   });
   return response.data;
 }
+
+export async function googleLogin(credential: string): Promise<TokenResponse> {
+  const response = await apiClient.post<TokenResponse>('/auth/google', { credential });
+  return response.data;
+}

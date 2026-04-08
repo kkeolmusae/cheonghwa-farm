@@ -15,6 +15,7 @@ const NoticeListPage = lazy(() => import('@/pages/NoticeListPage'));
 const NoticeFormPage = lazy(() => import('@/pages/NoticeFormPage'));
 const SiteImagesPage = lazy(() => import('@/pages/SiteImagesPage'));
 const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
+const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
 
 function PageLoader() {
   return (
@@ -48,6 +49,7 @@ export function App() {
           <Route path="notices/new" element={<NoticeFormPage />} />
           <Route path="notices/:id/edit" element={<NoticeFormPage />} />
           <Route path="site-images" element={<SiteImagesPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Route>
     </Routes>

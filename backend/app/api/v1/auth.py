@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -6,6 +7,10 @@ from app.schemas.auth import AdminLogin, TokenRefresh, TokenResponse
 from app.services import auth_service
 
 router = APIRouter(prefix="/auth", tags=["인증"])
+
+
+class GoogleLoginRequest(BaseModel):
+    credential: str
 
 
 @router.post(
@@ -33,3 +38,16 @@ async def refresh_token(
     db: AsyncSession = Depends(get_db),
 ) -> TokenResponse:
     return await auth_service.refresh_tokens(db, body.refresh_token)
+
+
+@router.post(
+    "/google",
+    response_model=TokenResponse,
+    summary="Google OAuth 로그인",
+    description="Google ID 토큰을 검증하여 허용된 계정이면 JWT 토큰을 발급합니다.",
+)
+async def google_login(
+    body: GoogleLoginRequest,
+    db: AsyncSession = Depends(get_db),
+) -> TokenResponse:
+    return await auth_service.google_login(db, body.credential)

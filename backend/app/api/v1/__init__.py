@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.v1.admin_categories import router as admin_categories_router
+from app.api.v1.admin_settings import router as admin_settings_router
 from app.api.v1.admin_journals import router as admin_journals_router
 from app.api.v1.admin_notices import router as admin_notices_router
 from app.api.v1.admin_orders import router as admin_orders_router
@@ -30,4 +31,5 @@ api_router.include_router(admin_orders_router)
 api_router.include_router(admin_site_settings_router)
 api_router.include_router(admin_journals_router)
 api_router.include_router(admin_notices_router)
+api_router.include_router(admin_settings_router)
 api_router.include_router(uploads_router)

@@ -9,6 +9,7 @@ import {
   Sprout,
   ImageIcon,
   Package,
+  Settings,
   Tag,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
@@ -22,6 +23,7 @@ const navItems = [
   { to: '/journals', label: '농장일지', icon: BookOpen, end: false },
   { to: '/notices', label: '공지사항', icon: Megaphone, end: false },
   { to: '/site-images', label: '메인 이미지', icon: ImageIcon, end: false },
+  { to: '/settings', label: '접근 설정', icon: Settings, end: false },
 ];
 
 interface SidebarProps {
