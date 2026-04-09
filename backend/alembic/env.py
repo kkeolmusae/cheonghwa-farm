@@ -51,10 +51,19 @@ def do_run_migrations(connection: Connection) -> None:
 
 async def run_async_migrations() -> None:
     """온라인 모드: 비동기 엔진으로 마이그레이션 실행."""
+    cfg = config.get_section(config.config_ini_section, {})
+    # RDS(AWS) 등 SSL 필요 환경 대응: asyncpg는 connect_args로 ssl 전달
+    connect_args = {}
+    db_url = cfg.get("sqlalchemy.url", "")
+    if "rds.amazonaws.com" in db_url:
+        import ssl
+        connect_args["ssl"] = ssl.create_default_context()
+
     connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
+        cfg,
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        connect_args=connect_args,
     )
 
     async with connectable.connect() as connection:
