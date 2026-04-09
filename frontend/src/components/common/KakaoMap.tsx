@@ -2,11 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MapPin } from 'lucide-react';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
+const w = window as any;
 
 interface KakaoMapProps {
   address: string;
@@ -20,7 +16,7 @@ let scriptLoadPromise: Promise<void> | null = null;
 
 function loadKakaoScript(appKey: string): Promise<void> {
   if (scriptLoadPromise) return scriptLoadPromise;
-  if (window.kakao?.maps) {
+  if (w.kakao?.maps) {
     scriptLoadPromise = Promise.resolve();
     return scriptLoadPromise;
   }
@@ -28,7 +24,7 @@ function loadKakaoScript(appKey: string): Promise<void> {
     const script = document.createElement('script');
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${appKey}&libraries=services&autoload=false`;
     script.async = true;
-    script.onload = () => window.kakao.maps.load(() => resolve());
+    script.onload = () => w.kakao.maps.load(() => resolve());
     script.onerror = () => {
       scriptLoadPromise = null;
       reject(new Error('카카오맵 SDK 로드 실패'));
@@ -55,29 +51,29 @@ export default function KakaoMap({ address, title, className = '' }: KakaoMapPro
       .then(() => {
         if (cancelled || !mapRef.current) return;
 
-        const geocoder = new window.kakao.maps.services.Geocoder();
+        const geocoder = new w.kakao.maps.services.Geocoder();
         geocoder.addressSearch(address, (result: any[], status: string) => {
           if (cancelled || !mapRef.current) return;
 
-          if (status !== window.kakao.maps.services.Status.OK) {
+          if (status !== w.kakao.maps.services.Status.OK) {
             setStatus('error');
             return;
           }
 
-          const coords = new window.kakao.maps.LatLng(
+          const coords = new w.kakao.maps.LatLng(
             Number(result[0].y),
             Number(result[0].x),
           );
 
-          const map = new window.kakao.maps.Map(mapRef.current, {
+          const map = new w.kakao.maps.Map(mapRef.current, {
             center: coords,
             level: 4,
           });
 
-          const marker = new window.kakao.maps.Marker({ position: coords });
+          const marker = new w.kakao.maps.Marker({ position: coords });
           marker.setMap(map);
 
-          const infowindow = new window.kakao.maps.InfoWindow({
+          const infowindow = new w.kakao.maps.InfoWindow({
             content: `<div style="padding:6px 12px;font-size:13px;font-weight:600;white-space:nowrap">${title}</div>`,
           });
           infowindow.open(map, marker);
