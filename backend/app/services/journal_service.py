@@ -48,7 +48,10 @@ async def get_journal(db: AsyncSession, journal_id: int) -> FarmJournal:
 
 async def create_journal(db: AsyncSession, data: JournalCreate) -> FarmJournal:
     """농장 일지 작성."""
-    journal = FarmJournal(title=data.title, content=data.content)
+    kwargs = {"title": data.title, "content": data.content}
+    if data.created_at is not None:
+        kwargs["created_at"] = data.created_at
+    journal = FarmJournal(**kwargs)
     db.add(journal)
     await db.flush()
 
@@ -72,7 +75,7 @@ async def update_journal(
 ) -> FarmJournal:
     """농장 일지 수정."""
     journal = await get_journal(db, journal_id)
-    update_data = data.model_dump(exclude_unset=True)
+    update_data = data.model_dump(exclude_unset=True, exclude_none=True)
     images_data = update_data.pop("images", None)
 
     for field, value in update_data.items():

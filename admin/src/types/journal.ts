@@ -31,11 +31,13 @@ export interface JournalImageCreate {
 export interface JournalCreate {
   title: string;
   content: string;
+  created_at?: string;
   images?: JournalImageCreate[];
 }
 
 export interface JournalUpdate {
   title?: string;
   content?: string;
+  created_at?: string;
   images?: JournalImageCreate[];
 }

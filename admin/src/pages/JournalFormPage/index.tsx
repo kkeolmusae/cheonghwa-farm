@@ -22,9 +22,16 @@ import type { UploadResponse } from '@/api/uploads';
 const journalSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요'),
   content: z.string().min(1, '내용을 입력해주세요'),
+  created_at: z.string().optional(),
 });
 
 type JournalFormData = z.infer<typeof journalSchema>;
+
+function todayLocalISO(): string {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
 
 export default function JournalFormPage() {
   const { id } = useParams<{ id: string }>();
@@ -54,6 +61,7 @@ export default function JournalFormPage() {
       reset({
         title: existingJournal.title,
         content: existingJournal.content,
+        created_at: existingJournal.created_at.slice(0, 10),
       });
       setImages(
         existingJournal.images.map((img) => ({
@@ -65,7 +73,10 @@ export default function JournalFormPage() {
   }, [existingJournal, reset]);
 
   const buildPayload = (data: JournalFormData) => ({
-    ...data,
+    title: data.title,
+    content: data.content,
+    // 날짜가 있으면 로컬 자정 → ISO 문자열로 변환해서 전송
+    ...(data.created_at ? { created_at: new Date(data.created_at + 'T00:00:00').toISOString() } : {}),
     images: images.map((img, idx) => ({
       image_url: img.image_url,
       thumbnail_url: img.thumbnail_url,
@@ -128,6 +139,16 @@ export default function JournalFormPage() {
             error={errors.title?.message}
             {...register('title')}
           />
+          <div>
+            <label className="label">작성일자</label>
+            <input
+              type="date"
+              className="input"
+              max={todayLocalISO()}
+              {...register('created_at')}
+            />
+            <p className="mt-1 text-xs text-gray-400">비워두면 오늘 날짜로 자동 등록됩니다.</p>
+          </div>
           <Textarea
             label="내용"
             placeholder="농장일지 내용을 작성해주세요"

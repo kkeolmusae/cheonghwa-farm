@@ -23,12 +23,14 @@ class JournalImageCreate(BaseModel):
 class JournalCreate(BaseModel):
     title: str = Field(max_length=255)
     content: str = ""
+    created_at: Optional[datetime] = None
     images: list[JournalImageCreate] = Field(default_factory=list)
 
 
 class JournalUpdate(BaseModel):
     title: Optional[str] = Field(None, max_length=255)
     content: Optional[str] = None
+    created_at: Optional[datetime] = None
     images: Optional[list[JournalImageCreate]] = None
 
 
