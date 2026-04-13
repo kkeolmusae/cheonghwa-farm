@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Leaf } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { FARM_INFO } from '@/constants/farm';
 import { cn } from '@/utils/cn';
+import logoImg from '@/assets/logo.png';
 
 const NAV_ITEMS = [
   { to: '/',             label: '홈',     end: true  },
@@ -62,12 +63,7 @@ export function Header() {
           onClick={() => setMobileOpen(false)}
           aria-label="청화 농원 홈으로 이동"
         >
-          <span
-            className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary shadow-sm"
-            aria-hidden="true"
-          >
-            <Leaf className="h-4 w-4 text-white" />
-          </span>
+          <img src={logoImg} alt="" className="h-8 w-8 rounded-xl object-cover" aria-hidden="true" />
           <span>{FARM_INFO.name}</span>
         </Link>
 
