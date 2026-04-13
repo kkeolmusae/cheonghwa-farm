@@ -59,6 +59,11 @@ export default function OrderStatusPage() {
     queryFn: () => getOrderByNumber(queryParams!.orderNumber, queryParams!.phone),
     enabled: !!queryParams,
     retry: false,
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      if (!status || status === 'delivered' || status === 'cancelled') return false;
+      return 30_000;
+    },
   });
 
   function formatPhone(raw: string): string {

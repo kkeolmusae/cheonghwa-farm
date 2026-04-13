@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { CheckCircle2, X, MapPin } from "lucide-react";
+import { CheckCircle2, X, MapPin, Copy, Check } from "lucide-react";
 import DaumPostcodeEmbed, { type Address } from "react-daum-postcode";
 import type { Product, ProductOption } from "@/types/product";
 import type { DeliveryType, OrderCreate, OrderResponse } from "@/types/order";
@@ -469,6 +469,14 @@ function OrderCompleteView({ order, phone, onClose }: OrderCompleteViewProps) {
   const statusUrl = `/order/status?order=${encodeURIComponent(order.order_number)}&phone=${encodeURIComponent(phone)}`;
   const showBankInfo = order.delivery_type === "택배" && !!order.bank_account;
   const totalPayment = order.total_amount + order.delivery_fee;
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(order.order_number).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
 
   return (
     <div className="flex flex-col items-center text-center">
@@ -481,7 +489,22 @@ function OrderCompleteView({ order, phone, onClose }: OrderCompleteViewProps) {
 
       <div className="mt-6 w-full rounded-2xl bg-forest-50 px-6 py-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-primary">주문번호</p>
-        <p className="mt-1.5 font-display text-2xl font-black tracking-widest text-on-bg">{order.order_number}</p>
+        <div className="mt-1.5 flex items-center justify-center gap-3">
+          <p className="font-display text-2xl font-black tracking-widest text-on-bg">{order.order_number}</p>
+          <button
+            type="button"
+            onClick={handleCopy}
+            className={cn(
+              'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors',
+              copied
+                ? 'bg-primary text-white'
+                : 'bg-white/70 text-on-muted hover:bg-white hover:text-primary',
+            )}
+            aria-label="주문번호 복사"
+          >
+            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          </button>
+        </div>
       </div>
 
       <div className="mt-4 w-full rounded-2xl bg-stone-50 px-6 py-4 text-left text-sm">
