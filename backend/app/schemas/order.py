@@ -81,6 +81,7 @@ class AdminOrderListItem(BaseModel):
     tracking_number: Optional[str] = None
     total_amount: int
     delivery_fee: int
+    expires_at: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
 

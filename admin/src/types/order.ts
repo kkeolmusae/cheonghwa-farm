@@ -27,6 +27,7 @@ export interface OrderListItem {
   tracking_number?: string;
   total_amount: number;
   delivery_fee: number;
+  expires_at?: string;
   created_at: string;
   updated_at: string;
 }

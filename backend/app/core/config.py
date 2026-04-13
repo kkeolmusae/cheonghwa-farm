@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = ""
 
     # 주문 관련 설정
-    PAYMENT_DEADLINE_HOURS: int = 48
+    PAYMENT_DEADLINE_HOURS: int = 24
     JEJU_ADDITIONAL_FEE: int = 3000
     REMOTE_AREA_ADDITIONAL_FEE: int = 5000
 

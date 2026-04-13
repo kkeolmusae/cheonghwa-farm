@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
-import { formatDateTime } from '@/utils/format';
+import { formatDateTime, formatExpiresIn } from '@/utils/format';
 import { cn } from '@/utils/cn';
 import type { OrderStatus } from '@/types/order';
 
@@ -446,6 +446,16 @@ export default function OrderDetailPage() {
                     <p className="mt-2 text-xs font-bold text-orange-900">
                       입금 금액: {(order.total_amount + order.delivery_fee).toLocaleString('ko-KR')}원
                     </p>
+                    {order.expires_at && (() => {
+                      const info = formatExpiresIn(order.expires_at);
+                      return info ? (
+                        <p className={['mt-1.5 text-xs font-semibold', info.urgent ? 'text-red-700' : 'text-orange-800'].join(' ')}>
+                          ⏱ 입금 기한: {info.text}
+                        </p>
+                      ) : (
+                        <p className="mt-1.5 text-xs font-semibold text-gray-500">입금 기한 만료 (자동 취소 처리됨)</p>
+                      );
+                    })()}
                   </div>
 
                   <Button

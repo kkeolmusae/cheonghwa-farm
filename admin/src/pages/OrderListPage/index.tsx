@@ -13,7 +13,7 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/Table';
-import { formatDateTime } from '@/utils/format';
+import { formatDateTime, formatExpiresIn } from '@/utils/format';
 import type { OrderListItem, OrderStatus } from '@/types/order';
 
 const PAGE_SIZE = 20;
@@ -150,6 +150,16 @@ export default function OrderListPage() {
                       >
                         {STATUS_LABELS[order.status]}
                       </span>
+                      {order.status === 'payment_pending' && order.expires_at && (() => {
+                        const info = formatExpiresIn(order.expires_at);
+                        return info ? (
+                          <div className={['mt-1 text-xs font-medium', info.urgent ? 'text-red-600' : 'text-orange-600'].join(' ')}>
+                            ⏱ {info.text}
+                          </div>
+                        ) : (
+                          <div className="mt-1 text-xs font-medium text-gray-400">기한 만료</div>
+                        );
+                      })()}
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end">
