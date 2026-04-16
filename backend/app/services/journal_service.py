@@ -17,7 +17,7 @@ async def list_journals(
     query = (
         select(FarmJournal)
         .options(selectinload(FarmJournal.images))
-        .order_by(FarmJournal.created_at.desc())
+        .order_by(FarmJournal.created_at.desc(), FarmJournal.id.desc())
         .offset(offset)
         .limit(limit)
     )
@@ -46,11 +46,21 @@ async def get_journal(db: AsyncSession, journal_id: int) -> FarmJournal:
     return journal
 
 
+def _to_naive_utc(dt) -> "datetime | None":
+    """timezone-aware datetime을 UTC naive로 변환 (DB TIMESTAMP WITHOUT TIME ZONE 대응)."""
+    if dt is None:
+        return None
+    if dt.tzinfo is not None:
+        from datetime import timezone
+        dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+    return dt
+
+
 async def create_journal(db: AsyncSession, data: JournalCreate) -> FarmJournal:
     """농장 일지 작성."""
     kwargs = {"title": data.title, "content": data.content}
     if data.created_at is not None:
-        kwargs["created_at"] = data.created_at
+        kwargs["created_at"] = _to_naive_utc(data.created_at)
     journal = FarmJournal(**kwargs)
     db.add(journal)
     await db.flush()
@@ -79,6 +89,8 @@ async def update_journal(
     images_data = update_data.pop("images", None)
 
     for field, value in update_data.items():
+        if field == 'created_at':
+            value = _to_naive_utc(value)
         setattr(journal, field, value)
 
     if images_data is not None:
