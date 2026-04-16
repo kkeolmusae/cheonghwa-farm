@@ -139,8 +139,6 @@ async def create_order(db: AsyncSession, order_data: OrderCreate) -> Order:
         extra_fee = get_extra_delivery_fee(order_data.customer_address)
         delivery_fee = base_delivery_fee + extra_fee
 
-    expires_at = datetime.now(timezone.utc) + timedelta(hours=settings.PAYMENT_DEADLINE_HOURS)
-
     order = Order(
         order_number=order_number,
         customer_name=order_data.customer_name,
@@ -151,7 +149,6 @@ async def create_order(db: AsyncSession, order_data: OrderCreate) -> Order:
         status="pending",
         total_amount=total_amount,
         delivery_fee=delivery_fee,
-        expires_at=expires_at,
     )
     db.add(order)
     await db.flush()
@@ -259,6 +256,7 @@ async def accept_order(db: AsyncSession, order_id: int) -> Order:
                     product.status = "품절"
 
     order.status = "payment_pending"
+    order.expires_at = datetime.now(timezone.utc) + timedelta(hours=settings.PAYMENT_DEADLINE_HOURS)
     await db.flush()
     return await _get_order_with_items(db, order.id)
 

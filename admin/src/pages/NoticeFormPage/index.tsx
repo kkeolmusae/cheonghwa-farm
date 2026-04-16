@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -13,13 +13,16 @@ import {
 } from '@/api/notices';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import { Card } from '@/components/ui/Card';
 import { Skeleton } from '@/components/ui/Skeleton';
 
 const noticeSchema = z.object({
   title: z.string().min(1, '제목을 입력해주세요'),
-  content: z.string().min(1, '내용을 입력해주세요'),
+  content: z.string().refine(
+    (v) => v.replace(/<[^>]*>/g, '').trim().length > 0,
+    { message: '내용을 입력해주세요' },
+  ),
   is_pinned: z.boolean(),
 });
 
@@ -35,6 +38,7 @@ export default function NoticeFormPage() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<NoticeFormData>({
     resolver: zodResolver(noticeSchema),
@@ -114,12 +118,18 @@ export default function NoticeFormPage() {
             error={errors.title?.message}
             {...register('title')}
           />
-          <Textarea
-            label="내용"
-            placeholder="공지 내용을 작성해주세요"
-            rows={10}
-            error={errors.content?.message}
-            {...register('content')}
+          <Controller
+            name="content"
+            control={control}
+            render={({ field }) => (
+              <RichTextEditor
+                label="내용"
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                placeholder="공지 내용을 작성해주세요"
+                error={errors.content?.message}
+              />
+            )}
           />
           <div className="flex items-center gap-2">
             <input
