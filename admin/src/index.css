@@ -16,6 +16,74 @@
 }
 
 @layer components {
+  /* RichTextEditor — TipTap 에디터 본문 내부 요소 스타일 */
+  .prose-editor h2 {
+    @apply mt-5 mb-2 text-base font-bold text-gray-900;
+  }
+
+  .prose-editor h3 {
+    @apply mt-4 mb-1.5 text-sm font-semibold text-gray-900;
+  }
+
+  .prose-editor p {
+    @apply mb-3 text-sm leading-relaxed;
+  }
+
+  .prose-editor p:last-child {
+    @apply mb-0;
+  }
+
+  .prose-editor ul {
+    @apply mb-3 list-disc pl-5 text-sm;
+  }
+
+  .prose-editor ol {
+    @apply mb-3 list-decimal pl-5 text-sm;
+  }
+
+  .prose-editor li {
+    @apply mb-1;
+  }
+
+  .prose-editor blockquote {
+    @apply my-3 border-l-4 border-primary-400 pl-3 italic text-gray-500;
+  }
+
+  .prose-editor strong {
+    @apply font-bold;
+  }
+
+  .prose-editor em {
+    @apply italic;
+  }
+
+  .prose-editor a {
+    @apply text-primary-600 underline underline-offset-2;
+  }
+
+  .prose-editor img {
+    @apply my-4 max-w-full rounded-lg;
+  }
+
+  .prose-editor img.ProseMirror-selectednode,
+  .prose-editor .ProseMirror-selectednode img {
+    box-shadow: 0 0 0 3px theme('colors.primary.500');
+    border-radius: 0.5rem;
+  }
+
+  .prose-editor code {
+    @apply rounded bg-gray-100 px-1 py-0.5 font-mono text-xs text-gray-800;
+  }
+
+  /* Placeholder */
+  .prose-editor .tiptap p.is-editor-empty:first-child::before {
+    color: #9ca3af;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: theme('colors.gray.300') transparent;
