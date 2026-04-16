@@ -18,7 +18,7 @@ import { cn } from '@/utils/cn';
  */
 
 const variants = {
-  success: 'bg-forest-100  text-forest-700',
+  success: 'bg-green-100   text-green-700',
   warning: 'bg-gold-100    text-gold-800',
   error:   'bg-red-50      text-red-700',
   info:    'bg-blue-50     text-blue-700',
