@@ -32,8 +32,6 @@ export default function JournalDetailPage() {
     );
   }
 
-  const sortedImages = [...journal.images].sort((a, b) => a.sort_order - b.sort_order);
-
   return (
     <article className="mx-auto max-w-3xl px-4 py-10 md:px-8 md:py-14">
       <Link
@@ -49,23 +47,21 @@ export default function JournalDetailPage() {
         <time className="mt-3 block text-sm text-on-muted">{formatDate(journal.created_at)}</time>
       </header>
 
-      <div className="mt-10 whitespace-pre-line font-body text-body-lg leading-relaxed text-on-muted">
-        {journal.content}
-      </div>
-
-      {sortedImages.length > 0 && (
-        <div className="mt-12 space-y-6">
-          {sortedImages.map((img) => (
-            <img
-              key={img.id}
-              src={img.image_url}
-              alt={journal.title}
-              className="w-full rounded-2xl object-cover shadow-sm"
-              loading="lazy"
-            />
-          ))}
-        </div>
-      )}
+      <div
+        className="mt-10 font-body text-body-lg leading-relaxed text-on-muted
+          [&_h2]:font-headline [&_h2]:text-h3 [&_h2]:font-bold [&_h2]:text-on-bg [&_h2]:mt-8 [&_h2]:mb-3
+          [&_h3]:font-headline [&_h3]:text-h4 [&_h3]:font-semibold [&_h3]:text-on-bg [&_h3]:mt-6 [&_h3]:mb-2
+          [&_p]:mb-4
+          [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4
+          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4
+          [&_li]:mb-1
+          [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-on-muted [&_blockquote]:my-4
+          [&_strong]:font-bold [&_strong]:text-on-surface
+          [&_em]:italic
+          [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2
+          [&_img]:my-6 [&_img]:max-w-full [&_img]:rounded-2xl [&_img]:shadow-sm"
+        dangerouslySetInnerHTML={{ __html: journal.content }}
+      />
 
       <div className="mt-14 border-t border-border/60 pt-10">
         <Link
